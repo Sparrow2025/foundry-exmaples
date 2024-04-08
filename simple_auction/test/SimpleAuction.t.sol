@@ -87,21 +87,38 @@ contract SimpleAuctionTest is Test {
         vm.startPrank(address(3));
         simpleAuction.bid{value: 0.06 ether}();
         vm.stopPrank();
+        // address(2) -> 0.95
+        assertEq(payable(address(2)).balance, 0.95 ether);
         vm.startPrank(address(2));
         bool status = simpleAuction.withdraw();
         vm.stopPrank();
         assertFalse(!status);
+        // address(2) -> 0.95 -> 1
+        assertEq(payable(address(2)).balance, 1 ether);
     }
 
     function testActionOver() public {
+        payable(address(2)).transfer(1 ether);
+        payable(address(3)).transfer(1 ether);
+        vm.startPrank(address(2));
+        simpleAuction.bid{value: 0.05 ether}();
+        vm.stopPrank();
+        vm.startPrank(address(3));
+        simpleAuction.bid{value: 0.06 ether}();
+        vm.stopPrank();
+
         // not yet ended
         vm.expectRevert();
         simpleAuction.auctionOver();
 
         vm.warp(2 days);
         simpleAuction.auctionOver();
+
         // ended
         vm.expectRevert();
         simpleAuction.auctionOver();
+
+        // address(1) -> 0.06 ether
+        assertEq(simpleAuction.beneficiary().balance, 0.06 ether);
     }
 }
