@@ -9,7 +9,7 @@ contract SimpleAuction {
     address public highestBidder;
     uint256 public highestBid;
 
-    mapping(address => uint256) pendingReturns;
+    mapping(address => uint256) public pendingReturns;
 
     bool ended;
 
