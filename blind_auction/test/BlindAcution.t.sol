@@ -7,5 +7,7 @@ import {BlindAuction} from "../src/BlindAuction.sol";
 contract BlindAuctionTest is Test {
     BlindAuction public blindAuction;
 
-    function setUp() public {}
+    function setUp() public {
+        blindAuction = new BlindAuction(1 days, 2 days, payable(address(1)));
+    }
 }
